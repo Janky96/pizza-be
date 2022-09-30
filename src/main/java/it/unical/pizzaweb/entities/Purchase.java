@@ -26,9 +26,6 @@ public class Purchase {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User buyer;
 
-    @Column(name = "quantity")
-    private Integer quantity;
-
     @OneToMany(mappedBy = "purchase")
     private List<ProductInPurchase> productInPurchaseList;
 

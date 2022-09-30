@@ -1,6 +1,11 @@
 package it.unical.pizzaweb.services;
 
 import it.unical.pizzaweb.dto.ProductInPurchaseDTO;
+import it.unical.pizzaweb.entities.Pizza;
+import it.unical.pizzaweb.entities.ProductInPurchase;
+import it.unical.pizzaweb.entities.Purchase;
+import it.unical.pizzaweb.errors.exceptions.IngredientNotFoundException;
+import it.unical.pizzaweb.errors.exceptions.PizzaNotFoundException;
 import it.unical.pizzaweb.repositories.ProductInPurchaseRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +33,18 @@ public class ProductInPurchaseService {
 
     public ProductInPurchaseDTO getProductInPurchase(Long id) {
         return mapper.map(productInPurchaseRepository.findById(id), ProductInPurchaseDTO.class);
+    }
+
+    public ProductInPurchaseDTO makeProductInPurchase(String pizzaName, Integer quantity, Purchase purchase) throws IngredientNotFoundException, PizzaNotFoundException {
+        ProductInPurchaseDTO productInPurchaseDTO = new ProductInPurchaseDTO();
+        productInPurchaseDTO.setPurchase(purchase);
+        pizzaService.makePizza(pizzaName, quantity);
+        Pizza pizza = mapper.map(pizzaService.getPizza(pizzaName), Pizza.class);
+        productInPurchaseDTO.setPrice(pizza.getPrice() * quantity);
+        productInPurchaseDTO.setPizza(pizza);
+        productInPurchaseRepository.save(mapper.map(productInPurchaseDTO, ProductInPurchase.class));
+
+        return productInPurchaseDTO;
     }
 
 }

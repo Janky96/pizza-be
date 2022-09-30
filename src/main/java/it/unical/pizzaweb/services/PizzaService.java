@@ -41,11 +41,19 @@ public class PizzaService {
         throw new PizzaNotFoundException("La pizza richiesta non esiste");
     }
 
+    public PizzaDTO getPizza(String name) throws PizzaNotFoundException {
+        Optional<Pizza> optionalPizza = pizzaRepository.findByName(name);
+        if(optionalPizza.isPresent()) {
+            return mapper.map(optionalPizza.get(), PizzaDTO.class);
+        }
+        throw new PizzaNotFoundException("La pizza richiesta non esiste");
+    }
+
     @Transactional
     public Boolean makePizza(PizzaDTO pizzaDTO) throws IngredientNotFoundException {
         List<IngredientDTO> ingredients = pizzaDTO.getIngredients();
         for(IngredientDTO i: ingredients) {
-            if(ingredientRepository.useIngredient(i.getName()) < 1) {
+            if(ingredientRepository.useIngredient(i.getName(), 1) < 1) {
                 throw new IngredientNotFoundException(String.format("Ingrediente <%s> finito o assente", i.getName()));
             }
         }
@@ -53,7 +61,7 @@ public class PizzaService {
     }
 
     @Transactional
-    public Boolean makePizza(String pizzaName) throws IngredientNotFoundException, PizzaNotFoundException {
+    public Boolean makePizza(String pizzaName, Integer quantity) throws IngredientNotFoundException, PizzaNotFoundException {
         Optional<Pizza> optionalPizza = pizzaRepository.findByName(pizzaName);
         if(optionalPizza.isEmpty()) {
             throw new PizzaNotFoundException("La pizza <%s> non esiste");
@@ -61,7 +69,7 @@ public class PizzaService {
         Pizza pizza = optionalPizza.get();
         List<Ingredient> ingredients = pizza.getIngredients();
         for(Ingredient i: ingredients) {
-            if(ingredientRepository.useIngredient(i.getName()) < 1) {
+            if(ingredientRepository.useIngredient(i.getName(), quantity != null ? quantity : 1) < 1) {
                 throw new IngredientNotFoundException(String.format("Ingrediente <%s> finito o assente", i.getName()));
             }
         }

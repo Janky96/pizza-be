@@ -14,10 +14,10 @@ public interface IngredientRepository extends JpaRepository<Ingredient, Long> {
 
     @Query(
             value = "UPDATE INGREDIENT I" +
-                    "SET QUANTITY = QUANTITY - 1" +
+                    "SET QUANTITY = (QUANTITY - :quantity)" +
                     "WHERE I.NAME = :name",
             nativeQuery = true)
-    Integer useIngredient(@Param("name") String name);
+    Integer useIngredient(@Param("name") String name, @Param("quantity") Integer quantity);
 
     Optional<Ingredient> findByName(String name);
 
