@@ -33,7 +33,7 @@ public class PizzaController {
 
     @PutMapping("/pizza/{pizzaName}")
     public ResponseEntity<Boolean> makePizza(@PathVariable String pizzaName) throws IngredientNotFoundException, PizzaNotFoundException {
-        return ResponseEntity.ok(pizzaService.makePizza(pizzaName));
+        return ResponseEntity.ok(pizzaService.makePizza(pizzaName, 1));
     }
 
 }

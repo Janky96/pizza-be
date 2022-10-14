@@ -2,6 +2,7 @@ package it.unical.pizzaweb.services;
 
 import it.unical.pizzaweb.dto.IngredientDTO;
 import it.unical.pizzaweb.entities.Ingredient;
+import it.unical.pizzaweb.errors.exceptions.IngredientNotFoundException;
 import it.unical.pizzaweb.repositories.IngredientRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +29,13 @@ public class IngredientService {
         return mapper.map(ingredient, IngredientDTO.class);
     }
 
-    public IngredientDTO updateIngredient(IngredientDTO ingredientDTO) {
-        Ingredient ingredient = mapper.map(ingredientDTO, Ingredient.class);
-        ingredientRepository.save(ingredient);
+    public IngredientDTO updateIngredient(Long id, IngredientDTO ingredientDTO) throws IngredientNotFoundException {
+        Optional<Ingredient> optionalIngredient = ingredientRepository.findById(id);
+        if(optionalIngredient.isEmpty()) {
+            throw new IngredientNotFoundException(String.format("L'ingrediente con id <%d>", id));
+        }
+        Ingredient ingredient = optionalIngredient.get();
+        ingredientRepository.save(selectiveUpdate(ingredient, ingredientDTO));
         return mapper.map(ingredient, IngredientDTO.class);
     }
 
@@ -39,7 +44,7 @@ public class IngredientService {
                 .collect(Collectors.toList());
     }
 
-    public IngredientDTO getIngredient(Long id) {
+    public IngredientDTO getIngredientById(Long id) {
         Optional<Ingredient> ingredientDTOOptional = ingredientRepository.findById(id);
         return mapper.map(ingredientDTOOptional.orElse(null), IngredientDTO.class);
     }
@@ -52,5 +57,18 @@ public class IngredientService {
     public Boolean deleteIngredient(Long id) {
         ingredientRepository.deleteById(id);
         return Boolean.TRUE;
+    }
+
+    private Ingredient selectiveUpdate(Ingredient ingredient, IngredientDTO ingredientDTO) {
+        if(ingredientDTO.getName() != null) {
+            ingredient.setName(ingredientDTO.getName());
+        }
+        if(ingredientDTO.getQuantity() != null) {
+            ingredient.setQuantity(ingredientDTO.getQuantity());
+        }
+        if(ingredientDTO.getPrice() != null) {
+            ingredient.setPrice(ingredientDTO.getPrice());
+        }
+        return ingredient;
     }
 }

@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Data
-public class OrderInputDTO {
+public class OrderPizzaInputDTO {
 
     private String pizzaName;
     private int quantity;
