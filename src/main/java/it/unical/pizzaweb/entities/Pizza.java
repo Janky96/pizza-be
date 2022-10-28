@@ -23,7 +23,15 @@ public class Pizza {
     @Column(name = "price")
     private Double price;
 
-    @OneToMany
+    @Column(name = "image")
+    private String image;
+
+    @ManyToMany
+    @JoinTable(
+            name = "pizza_ingredient",
+            joinColumns = { @JoinColumn(name = "pizza_id") },
+            inverseJoinColumns = { @JoinColumn(name = "ingredient_id") }
+    )
     private List<Ingredient> ingredients;
 
 }

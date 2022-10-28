@@ -9,5 +9,4 @@ public class OrderPizzaInputDTO {
 
     private String pizzaName;
     private int quantity;
-
 }

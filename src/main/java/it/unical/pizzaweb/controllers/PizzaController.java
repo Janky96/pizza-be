@@ -1,6 +1,7 @@
 package it.unical.pizzaweb.controllers;
 
 import it.unical.pizzaweb.dto.PizzaDTO;
+import it.unical.pizzaweb.dto.input.CreatePizzaInputDTO;
 import it.unical.pizzaweb.errors.exceptions.IngredientNotFoundException;
 import it.unical.pizzaweb.errors.exceptions.PizzaNotFoundException;
 import it.unical.pizzaweb.services.PizzaService;
@@ -17,8 +18,8 @@ public class PizzaController {
     PizzaService pizzaService;
 
     @PostMapping("/pizza")
-    public PizzaDTO createPizza(@RequestBody PizzaDTO pizzaDTO) throws IngredientNotFoundException {
-        return pizzaService.createPizza(pizzaDTO);
+    public PizzaDTO createPizza(@RequestBody CreatePizzaInputDTO createPizzaInputDTO) throws IngredientNotFoundException {
+        return pizzaService.createPizza(createPizzaInputDTO);
     }
 
     @GetMapping("/pizza")

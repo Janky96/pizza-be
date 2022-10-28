@@ -1,7 +1,8 @@
 package it.unical.pizzaweb.services;
 
-import it.unical.pizzaweb.dto.IngredientDTO;
 import it.unical.pizzaweb.dto.PizzaDTO;
+import it.unical.pizzaweb.dto.builders.PizzaDTOBuilder;
+import it.unical.pizzaweb.dto.input.CreatePizzaInputDTO;
 import it.unical.pizzaweb.entities.Ingredient;
 import it.unical.pizzaweb.entities.Pizza;
 import it.unical.pizzaweb.errors.exceptions.IngredientNotFoundException;
@@ -30,7 +31,7 @@ public class PizzaService {
 
     public List<PizzaDTO> getPizzas() {
         List<Pizza> pizzas = pizzaRepository.findAll();
-        return pizzas.stream().map(pizza -> mapper.map(pizza, PizzaDTO.class)).collect(Collectors.toList());
+        return pizzas.stream().map(PizzaDTOBuilder::buildDTOFromPizza).collect(Collectors.toList());
     }
 
     public PizzaDTO getPizza(Long id) throws PizzaNotFoundException {
@@ -51,10 +52,10 @@ public class PizzaService {
 
     @Transactional
     public Boolean makePizza(PizzaDTO pizzaDTO) throws IngredientNotFoundException {
-        List<IngredientDTO> ingredients = pizzaDTO.getIngredients();
-        for(IngredientDTO i: ingredients) {
-            if(ingredientRepository.useIngredient(i.getName(), 1) < 1) {
-                throw new IngredientNotFoundException(String.format("Ingrediente <%s> finito o assente", i.getName()));
+        List<String> ingredients = pizzaDTO.getIngredients();
+        for(String i: ingredients) {
+            if(ingredientRepository.useIngredient(i, 1) < 1) {
+                throw new IngredientNotFoundException(String.format("Ingrediente <%s> finito o assente", i));
             }
         }
         return true;
@@ -77,14 +78,22 @@ public class PizzaService {
     }
 
     @Transactional
-    public PizzaDTO createPizza(PizzaDTO pizzaDTO) throws IngredientNotFoundException {
-        List<IngredientDTO> ingredients = pizzaDTO.getIngredients();
-        List<Ingredient> ingredientsInRepository = ingredientRepository.findByNameIn(ingredients.stream()
-                .map(IngredientDTO::getName).collect(Collectors.toList()));
+    public PizzaDTO createPizza(CreatePizzaInputDTO createPizzaInputDTO) throws IngredientNotFoundException {
+        List<String> ingredients = createPizzaInputDTO.getIngredients();
+        List<Ingredient> ingredientsInRepository = ingredientRepository.findByNameIn(ingredients);
         if(ingredients.size() != ingredientsInRepository.size()) {
-            ingredients.removeAll(ingredientsInRepository);
+            throw new IngredientNotFoundException("Non sono stati trovati tutti gli ingredienti");
         }
-        Pizza pizza = pizzaRepository.save(mapper.map(pizzaDTO, Pizza.class));
+        Pizza pizza = new Pizza();
+        pizza.setName(createPizzaInputDTO.getName());
+        pizza.setPrice(calculatePrice(ingredientsInRepository));
+        pizza.setIngredients(ingredientsInRepository);
+        pizzaRepository.save(pizza);
         return mapper.map(pizza, PizzaDTO.class);
+    }
+
+    private Double calculatePrice(List<Ingredient> ingredients) {
+        return ingredients.stream().map(Ingredient::getPrice).collect(Collectors.toList())
+                .stream().reduce(0D, (a, b) -> a + b);
     }
 }

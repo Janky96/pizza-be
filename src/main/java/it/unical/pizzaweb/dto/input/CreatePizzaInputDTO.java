@@ -1,17 +1,12 @@
-package it.unical.pizzaweb.dto;
+package it.unical.pizzaweb.dto.input;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.util.List;
 
 @NoArgsConstructor
 @Data
-public class PizzaDTO {
-
-    private Long id;
+public class CreatePizzaInputDTO {
     private String name;
-    private Double price;
-    private String image;
     private List<String> ingredients;
 }
