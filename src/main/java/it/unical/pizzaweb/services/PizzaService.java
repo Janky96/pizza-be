@@ -65,7 +65,23 @@ public class PizzaService {
     public Boolean makePizza(String pizzaName, Integer quantity) throws IngredientNotFoundException, PizzaNotFoundException {
         Optional<Pizza> optionalPizza = pizzaRepository.findByName(pizzaName);
         if(optionalPizza.isEmpty()) {
-            throw new PizzaNotFoundException("La pizza <%s> non esiste");
+            throw new PizzaNotFoundException(String.format("La pizza <%s> non esiste", pizzaName));
+        }
+        Pizza pizza = optionalPizza.get();
+        List<Ingredient> ingredients = pizza.getIngredients();
+        for(Ingredient i: ingredients) {
+            if(ingredientRepository.useIngredient(i.getName(), quantity != null ? quantity : 1) < 1) {
+                throw new IngredientNotFoundException(String.format("Ingrediente <%s> finito o assente", i.getName()));
+            }
+        }
+        return true;
+    }
+
+    @Transactional
+    public Boolean makePizza(Long id, Integer quantity) throws IngredientNotFoundException, PizzaNotFoundException {
+        Optional<Pizza> optionalPizza = pizzaRepository.findById(id);
+        if(optionalPizza.isEmpty()) {
+            throw new PizzaNotFoundException(String.format("La pizza con id <%d> non esiste", id));
         }
         Pizza pizza = optionalPizza.get();
         List<Ingredient> ingredients = pizza.getIngredients();

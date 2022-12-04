@@ -35,11 +35,11 @@ public class ProductInPurchaseService {
         return mapper.map(productInPurchaseRepository.findById(id), ProductInPurchaseDTO.class);
     }
 
-    public ProductInPurchaseDTO makeProductInPurchase(String pizzaName, Integer quantity, Purchase purchase) throws IngredientNotFoundException, PizzaNotFoundException {
+    public ProductInPurchaseDTO makeProductInPurchase(Long idPizza, Integer quantity, Purchase purchase) throws IngredientNotFoundException, PizzaNotFoundException {
         ProductInPurchaseDTO productInPurchaseDTO = new ProductInPurchaseDTO();
         productInPurchaseDTO.setPurchase(purchase);
-        pizzaService.makePizza(pizzaName, quantity);
-        Pizza pizza = mapper.map(pizzaService.getPizza(pizzaName), Pizza.class);
+        pizzaService.makePizza(idPizza, quantity);
+        Pizza pizza = mapper.map(pizzaService.getPizza(idPizza), Pizza.class);
         productInPurchaseDTO.setPrice(pizza.getPrice() * quantity);
         productInPurchaseDTO.setPizza(pizza);
         productInPurchaseRepository.save(mapper.map(productInPurchaseDTO, ProductInPurchase.class));

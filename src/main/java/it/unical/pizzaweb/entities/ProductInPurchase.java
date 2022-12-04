@@ -17,7 +17,7 @@ public class ProductInPurchase {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "address_id", referencedColumnName = "id")
+    @JoinColumn(name = "pizza_id", referencedColumnName = "id")
     private Pizza pizza;
 
     @Column(name = "quantity")
@@ -27,7 +27,7 @@ public class ProductInPurchase {
     private Double price;
 
     @ManyToOne
-    @JoinColumn(name = "cart_id", nullable = false)
+    @JoinColumn(name = "purchase_id", referencedColumnName = "id", nullable = false)
     private Purchase purchase;
 
 }

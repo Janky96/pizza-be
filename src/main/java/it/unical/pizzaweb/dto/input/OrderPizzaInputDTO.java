@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 public class OrderPizzaInputDTO {
 
-    private String pizzaName;
+    private Long id;
     private int quantity;
 }
