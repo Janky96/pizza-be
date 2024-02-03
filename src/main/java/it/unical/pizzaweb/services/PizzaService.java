@@ -29,8 +29,11 @@ public class PizzaService {
 
     private final ModelMapper mapper = new ModelMapper();
 
-    public List<PizzaDTO> getPizzas() {
+    public List<PizzaDTO> getPizzas() throws PizzaNotFoundException {
         List<Pizza> pizzas = pizzaRepository.findAll();
+        if(pizzas.isEmpty()) {
+            throw new PizzaNotFoundException("Non esistono pizze nel DB");
+        }
         return pizzas.stream().map(PizzaDTOBuilder::buildDTOFromPizza).collect(Collectors.toList());
     }
 
@@ -42,7 +45,7 @@ public class PizzaService {
         throw new PizzaNotFoundException("La pizza richiesta non esiste");
     }
 
-    public PizzaDTO getPizza(String name) throws PizzaNotFoundException {
+    public PizzaDTO getPizzaByName(String name) throws PizzaNotFoundException {
         Optional<Pizza> optionalPizza = pizzaRepository.findByName(name);
         if(optionalPizza.isPresent()) {
             return mapper.map(optionalPizza.get(), PizzaDTO.class);

@@ -24,7 +24,7 @@ public class PizzaController {
     }
 
     @GetMapping("/pizza")
-    public ResponseEntity<List<PizzaDTO>> getPizzas() {
+    public ResponseEntity<List<PizzaDTO>> getPizzas() throws PizzaNotFoundException {
         return ResponseEntity.ok(pizzaService.getPizzas());
     }
 

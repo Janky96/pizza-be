@@ -2,6 +2,8 @@ package it.unical.pizzaweb.services;
 
 import it.unical.pizzaweb.dto.ProductInPurchaseDTO;
 import it.unical.pizzaweb.dto.input.OrderPizzaInputDTO;
+import it.unical.pizzaweb.entities.Pizza;
+import it.unical.pizzaweb.entities.ProductInPurchase;
 import it.unical.pizzaweb.entities.Purchase;
 import it.unical.pizzaweb.errors.exceptions.IngredientNotFoundException;
 import it.unical.pizzaweb.errors.exceptions.PizzaNotFoundException;
@@ -26,7 +28,7 @@ public class PurchaseService {
         Purchase purchase = new Purchase();
         List<ProductInPurchaseDTO> productInPurchaseDTOList = new ArrayList<>();
         for(OrderPizzaInputDTO orderPizzaInputDTO : orderPizzaInputDTOList) {
-            productInPurchaseService.makeProductInPurchase(orderPizzaInputDTO.getId(), orderPizzaInputDTO.getQuantity(), purchase);
+            productInPurchaseDTOList.add(productInPurchaseService.makeProductInPurchase(orderPizzaInputDTO.getId(), orderPizzaInputDTO.getQuantity(), purchase));
         }
     }
 }
