@@ -4,12 +4,12 @@ import it.unical.pizzaweb.dto.ProductInPurchaseDTO;
 import it.unical.pizzaweb.entities.Pizza;
 import it.unical.pizzaweb.entities.ProductInPurchase;
 import it.unical.pizzaweb.entities.Purchase;
-import it.unical.pizzaweb.errors.exceptions.IngredientNotFoundException;
-import it.unical.pizzaweb.errors.exceptions.PizzaNotFoundException;
+import it.unical.pizzaweb.repositories.PizzaRepository;
 import it.unical.pizzaweb.repositories.ProductInPurchaseRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,7 +21,7 @@ public class ProductInPurchaseService {
     ProductInPurchaseRepository productInPurchaseRepository;
 
     @Autowired
-    PizzaService pizzaService;
+    PizzaRepository pizzaRepository;
 
     private final ModelMapper mapper = new ModelMapper();
 
@@ -35,16 +35,16 @@ public class ProductInPurchaseService {
         return mapper.map(productInPurchaseRepository.findById(id), ProductInPurchaseDTO.class);
     }
 
-    public ProductInPurchaseDTO makeProductInPurchase(Long idPizza, Integer quantity, Purchase purchase) throws IngredientNotFoundException, PizzaNotFoundException {
-        ProductInPurchaseDTO productInPurchaseDTO = new ProductInPurchaseDTO();
-        productInPurchaseDTO.setPurchase(purchase);
-        pizzaService.makePizza(idPizza, quantity);
-        Pizza pizza = mapper.map(pizzaService.getPizza(idPizza), Pizza.class);
-        productInPurchaseDTO.setPrice(pizza.getPrice() * quantity);
-        productInPurchaseDTO.setPizza(pizza);
-        productInPurchaseRepository.save(mapper.map(productInPurchaseDTO, ProductInPurchase.class));
+    @Transactional
+    public ProductInPurchase makeProductInPurchase(Long idPizza, Integer quantity, Purchase purchase) {
+        ProductInPurchase productInPurchase = new ProductInPurchase();
+        productInPurchase.setPurchase(purchase);
+        Pizza pizza = mapper.map(pizzaRepository.findById(idPizza), Pizza.class);
+        productInPurchase.setPrice(pizza.getPrice() * quantity);
+        productInPurchase.setPizza(pizza);
+        productInPurchaseRepository.save(productInPurchase);
 
-        return productInPurchaseDTO;
+        return productInPurchase;
     }
 
 }

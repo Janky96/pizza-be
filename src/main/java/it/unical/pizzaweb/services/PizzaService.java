@@ -88,12 +88,7 @@ public class PizzaService {
         }
         Pizza pizza = optionalPizza.get();
         List<Ingredient> ingredients = pizza.getIngredients();
-        for(Ingredient i: ingredients) {
-            if(ingredientRepository.useIngredient(i.getName(), quantity != null ? quantity : 1) < 1) {
-                throw new IngredientNotFoundException(String.format("Ingrediente <%s> finito o assente", i.getName()));
-            }
-        }
-        return true;
+        return ingredientRepository.useIngredientsOfPizzaWithQuantity(id, quantity) > 0;
     }
 
     @Transactional
