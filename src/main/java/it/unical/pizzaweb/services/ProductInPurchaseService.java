@@ -40,6 +40,7 @@ public class ProductInPurchaseService {
         ProductInPurchase productInPurchase = new ProductInPurchase();
         productInPurchase.setPurchase(purchase);
         Pizza pizza = mapper.map(pizzaRepository.findById(idPizza), Pizza.class);
+        productInPurchase.setQuantity(quantity);
         productInPurchase.setPrice(pizza.getPrice() * quantity);
         productInPurchase.setPizza(pizza);
         productInPurchaseRepository.save(productInPurchase);

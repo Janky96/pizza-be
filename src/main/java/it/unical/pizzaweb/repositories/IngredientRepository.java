@@ -23,12 +23,12 @@ public interface IngredientRepository extends JpaRepository<Ingredient, Long> {
 
     @Modifying
     @Query(
-            value = "UPDATE ingredient i" +
-                    "SET quantity = (quantity - :quantity)" +
+            value = "UPDATE ingredient i " +
+                    "SET quantity = (quantity - :quantity) " +
                     "WHERE i.id IN (" +
-                        "SELECT pizz_ing.ingredient_id" +
-                        "FROM pizza_ingredient pizz_ing" +
-                        "INNER JOIN pizza p ON pizz_ing.pizza_id = p.id" +
+                        "SELECT pizz_ing.ingredient_id " +
+                        "FROM pizza_ingredient pizz_ing " +
+                        "INNER JOIN pizza p ON pizz_ing.pizza_id = p.id " +
                         "WHERE p.id = :idPizza" +
                     ")",
             nativeQuery = true

@@ -1,5 +1,6 @@
 package it.unical.pizzaweb.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -21,13 +22,14 @@ public class ProductInPurchase {
     private Pizza pizza;
 
     @Column(name = "quantity")
-    private String quantity;
+    private Integer quantity;
 
     @Column(name = "price")
     private Double price;
 
     @ManyToOne
     @JoinColumn(name = "purchase_id", referencedColumnName = "id", nullable = false)
+    @JsonBackReference
     private Purchase purchase;
 
 }

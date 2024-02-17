@@ -1,7 +1,6 @@
 package it.unical.pizzaweb.dto;
 
-import it.unical.pizzaweb.authentication.entities.User;
-import it.unical.pizzaweb.entities.ProductInPurchase;
+import it.unical.pizzaweb.authentication.dto.UserDTO;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,8 +13,8 @@ public class PurchaseDTO {
 
     private Long id;
     private Date date;
-    private User buyer;
+    private UserDTO buyer;
     private Integer quantity;
-    private List<ProductInPurchase> productInPurchaseList;
+    private List<ProductInPurchaseDTO> productInPurchaseList;
 
 }

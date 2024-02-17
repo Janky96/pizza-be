@@ -1,5 +1,6 @@
 package it.unical.pizzaweb.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import it.unical.pizzaweb.authentication.entities.User;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,6 +28,7 @@ public class Purchase {
     private User buyer;
 
     @OneToMany(mappedBy = "purchase")
+    @JsonManagedReference
     private List<ProductInPurchase> productInPurchaseList;
 
 }
