@@ -14,7 +14,7 @@ public class PurchaseDTO {
     private Long id;
     private Date date;
     private UserDTO buyer;
-    private Integer quantity;
+    private Double price;
     private List<ProductInPurchaseDTO> productInPurchaseList;
 
 }
